@@ -815,7 +815,16 @@ export default function Home() {
 
       <footer className="footer-note">
         <p>Modifier values may change before the start of the season for balancing reasons.</p>
-        <p>Unofficial fan planner. Escape from Tarkov and related names belong to Battlestate Games.</p>
+        <p>
+          Unofficial fan planner. Escape from Tarkov and related names belong to Battlestate Games.
+        </p>
+        <p>
+          Like the project?{" "}
+          <a href="https://github.com/pedrobragabes/tarkov-season-builder" target="_blank" rel="noreferrer">
+            Star it on GitHub or open an issue
+          </a>
+          .
+        </p>
       </footer>
     </main>
   );

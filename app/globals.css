@@ -648,6 +648,16 @@ button.modifier-card:hover {
   margin-bottom: 0;
 }
 
+.footer-note a {
+  color: var(--green);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.footer-note a:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 1120px) {
   .builder-bar {
     grid-template-columns: 1fr;
