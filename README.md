@@ -14,6 +14,9 @@ The first supported season is **Season 1: Kord Breach**. The app lets players pl
 - Opposite traits block each other, such as stamina buffs versus stamina debuffs.
 - Selected traits use a stronger highlight color.
 - Build state is stored in the URL hash so it can be shared.
+- Share links can be copied directly.
+- Build summaries can be copied as text.
+- Selected builds can be downloaded as a highlighted PNG.
 - Uses the official Kord Breach modifier image as the clickable build board.
 
 ## Tech Stack
