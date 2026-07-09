@@ -2,7 +2,7 @@
 
 Unofficial Escape from Tarkov seasonal modifier build planner.
 
-The first supported season is **Season 1: Kord Breach**. The app lets players plan a modifier build before playing by selecting personal positive and negative traits, tracking available points, and blocking incompatible traits.
+The first supported season is **Season 1: Kord Breach**. The app lets players plan a modifier build before playing by clicking traits directly on the official modifier board image, tracking available points, and blocking incompatible traits.
 
 ## Features
 
@@ -14,7 +14,7 @@ The first supported season is **Season 1: Kord Breach**. The app lets players pl
 - Opposite traits block each other, such as stamina buffs versus stamina debuffs.
 - Selected traits use a stronger highlight color.
 - Build state is stored in the URL hash so it can be shared.
-- Includes the official Kord Breach reference image for comparison.
+- Uses the official Kord Breach modifier image as the clickable build board.
 
 ## Tech Stack
 

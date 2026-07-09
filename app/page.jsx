@@ -299,8 +299,75 @@ const negativeModifiers = [
   }
 ];
 
+const boardSize = {
+  width: 2397,
+  height: 2149
+};
+
+const column = {
+  left: 16,
+  middle: 805,
+  right: 1605,
+  width: 776
+};
+
+const globalRows = [307, 423];
+const positiveRows = [624, 740, 856, 973, 1089, 1205];
+const negativeRows = [1404, 1521, 1637, 1754, 1871];
+const cardHeight = 99;
+
+const boardRegions = {
+  "no-insurance": { x: column.left, y: globalRows[0], w: column.width, h: cardHeight, type: "global" },
+  "black-division": { x: column.middle, y: globalRows[0], w: column.width, h: cardHeight, type: "global" },
+  "no-fir-for-hideout": { x: column.right, y: globalRows[0], w: column.width, h: cardHeight, type: "global" },
+  "armor-shortage": { x: column.left, y: globalRows[1], w: column.width, h: cardHeight, type: "global" },
+  handyman: { x: column.middle, y: globalRows[1], w: column.width, h: cardHeight, type: "global" },
+  "seasoned-pmcs": { x: column.right, y: globalRows[1], w: column.width, h: cardHeight, type: "global" },
+
+  "marathon-runner": { x: column.left, y: positiveRows[0], w: column.width, h: cardHeight, type: "positive" },
+  safecracker: { x: column.middle, y: positiveRows[0], w: column.width, h: cardHeight, type: "positive" },
+  bushborne: { x: column.right, y: positiveRows[0], w: column.width, h: cardHeight, type: "positive" },
+  "juice-time": { x: column.left, y: positiveRows[1], w: column.width, h: cardHeight, type: "positive" },
+  "sailors-nostalgia": { x: column.middle, y: positiveRows[1], w: column.width, h: cardHeight, type: "positive" },
+  youth: { x: column.right, y: positiveRows[1], w: column.width, h: cardHeight, type: "positive" },
+  "street-tax": { x: column.left, y: positiveRows[2], w: column.width, h: cardHeight, type: "positive" },
+  "the-tarkov-shooter": { x: column.middle, y: positiveRows[2], w: column.width, h: cardHeight, type: "positive" },
+  diet: { x: column.right, y: positiveRows[2], w: column.width, h: cardHeight, type: "positive" },
+  hercules: { x: column.left, y: positiveRows[3], w: column.width, h: cardHeight, type: "positive" },
+  sprinter: { x: column.middle, y: positiveRows[3], w: column.width, h: cardHeight, type: "positive" },
+  thrombophilia: { x: column.right, y: positiveRows[3], w: column.width, h: cardHeight, type: "positive" },
+  hypodipsia: { x: column.left, y: positiveRows[4], w: column.width, h: cardHeight, type: "positive" },
+  polyphagia: { x: column.middle, y: positiveRows[4], w: column.width, h: cardHeight, type: "positive" },
+  "sturdy-bones": { x: column.right, y: positiveRows[4], w: column.width, h: cardHeight, type: "positive" },
+  average: { x: column.left, y: positiveRows[5], w: column.width, h: cardHeight, type: "positive" },
+  "kappa-protocol": { x: column.middle, y: positiveRows[5], w: column.width, h: cardHeight, type: "positive" },
+
+  hemophilia: { x: column.left, y: negativeRows[0], w: column.width, h: cardHeight, type: "negative" },
+  osteoporosis: { x: column.middle, y: negativeRows[0], w: column.width, h: cardHeight, type: "negative" },
+  exhaustion: { x: column.right, y: negativeRows[0], w: column.width, h: cardHeight, type: "negative" },
+  "well-that-hurt": { x: column.left, y: negativeRows[1], w: column.width, h: cardHeight, type: "negative" },
+  incompetent: { x: column.middle, y: negativeRows[1], w: column.width, h: cardHeight, type: "negative" },
+  polydipsia: { x: column.right, y: negativeRows[1], w: column.width, h: cardHeight, type: "negative" },
+  "chronic-fatigue-syndrome": { x: column.left, y: negativeRows[2], w: column.width, h: cardHeight, type: "negative" },
+  "personality-vacuum": { x: column.middle, y: negativeRows[2], w: column.width, h: cardHeight, type: "negative" },
+  "dr-jekyll": { x: column.right, y: negativeRows[2], w: column.width, h: cardHeight, type: "negative" },
+  allergic: { x: column.left, y: negativeRows[3], w: column.width, h: cardHeight, type: "negative" },
+  "broken-secure-container": { x: column.middle, y: negativeRows[3], w: column.width, h: cardHeight, type: "negative" },
+  "no-flea-market": { x: column.right, y: negativeRows[3], w: column.width, h: cardHeight, type: "negative" },
+  "third-leg": { x: column.left, y: negativeRows[4], w: column.width, h: cardHeight, type: "negative" }
+};
+
 const personalModifiers = [...positiveModifiers, ...negativeModifiers];
 const modifierById = new Map(personalModifiers.map((modifier) => [modifier.id, modifier]));
+
+function getRegionStyle(region) {
+  return {
+    left: `${(region.x / boardSize.width) * 100}%`,
+    top: `${(region.y / boardSize.height) * 100}%`,
+    width: `${(region.w / boardSize.width) * 100}%`,
+    height: `${(region.h / boardSize.height) * 100}%`
+  };
+}
 
 function formatValue(value) {
   return value > 0 ? `(+${value})` : `(${value})`;
@@ -499,44 +566,58 @@ export default function Home() {
     }
   }
 
-  function renderModifierCard(modifier, type) {
+  function renderBoardHotspot(modifier, type) {
     const isSelected = selected.has(modifier.id);
     const blockReason = isSelected ? "" : getBlockReason(modifier, selected);
     const isBlocked = Boolean(blockReason);
+    const region = boardRegions[modifier.id];
+
+    if (!region) {
+      return null;
+    }
 
     return (
       <button
         key={modifier.id}
         type="button"
         data-modifier-id={modifier.id}
+        style={getRegionStyle(region)}
         className={[
-          "modifier-card",
+          "image-hotspot",
           type,
           isSelected ? "is-selected" : "",
           isBlocked ? "is-blocked" : ""
         ].join(" ")}
         aria-pressed={isSelected}
         aria-disabled={isBlocked}
+        title={`${modifier.name} ${formatValue(modifier.value)}${blockReason ? ` - ${blockReason}` : ""}`}
         onClick={() => toggleModifier(modifier)}
       >
-        <span className="modifier-icon" aria-hidden="true">
-          {modifier.mark}
+        <span className="sr-only">
+          {modifier.name} {formatValue(modifier.value)}
         </span>
-        <span className="modifier-copy">
-          <span className="modifier-title-row">
-            <strong>{modifier.name}</strong>
-            <span>{formatValue(modifier.value)}</span>
-          </span>
-          <ul>
-            {modifier.effects.map((effect) => (
-              <li key={effect}>{effect}</li>
-            ))}
-          </ul>
-          {blockReason ? <span className="block-label">{blockReason}</span> : null}
-        </span>
-        <span className="toggle-rail" aria-hidden="true">
-          <span className="toggle-knob"></span>
-        </span>
+        {isSelected ? <span className="hotspot-chip">Selected</span> : null}
+        {blockReason ? <span className="hotspot-chip">{blockReason}</span> : null}
+      </button>
+    );
+  }
+
+  function renderGlobalHotspot(modifier) {
+    const region = boardRegions[modifier.id];
+
+    return (
+      <button
+        key={modifier.id}
+        type="button"
+        data-modifier-id={modifier.id}
+        style={getRegionStyle(region)}
+        className="image-hotspot global is-selected"
+        aria-pressed="true"
+        title={`${modifier.name} - global modifier always active`}
+        onClick={() => setStatus(`${modifier.name} is a global modifier and is always active.`)}
+      >
+        <span className="sr-only">{modifier.name} global modifier always active</span>
+        <span className="hotspot-chip">Active</span>
       </button>
     );
   }
@@ -554,17 +635,6 @@ export default function Home() {
             from debuffs, then spend them on buffs.
           </p>
         </section>
-
-        <aside className="reference-panel" aria-label="Official reference image">
-          <Image
-            src="/kord-breach-reference.png"
-            alt="Official Kord Breach modifiers reference"
-            width={560}
-            height={500}
-            priority
-          />
-          <span>Official reference image</span>
-        </aside>
       </header>
 
       <section className="builder-bar" aria-label="Build status">
@@ -601,57 +671,28 @@ export default function Home() {
         {status}
       </p>
 
-      <section className="modifier-section global-section" aria-labelledby="global-title">
-        <div className="section-heading global-heading">
+      <section className="official-board-section" aria-labelledby="board-title">
+        <div className="section-heading board-heading">
           <span></span>
-          <h2 id="global-title">Global Modifiers</h2>
-          <span></span>
-        </div>
-        <div className="modifier-grid globals">
-          {globalModifiers.map((modifier) => (
-            <article
-              className="modifier-card global-card is-selected"
-              data-modifier-id={modifier.id}
-              key={modifier.id}
-            >
-              <span className="modifier-icon" aria-hidden="true">
-                {modifier.mark}
-              </span>
-              <span className="modifier-copy">
-                <span className="modifier-title-row">
-                  <strong>{modifier.name}</strong>
-                  <span className="lock-badge">ACTIVE</span>
-                </span>
-                <ul>
-                  {modifier.effects.map((effect) => (
-                    <li key={effect}>{effect}</li>
-                  ))}
-                </ul>
-              </span>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="modifier-section positive-section" aria-labelledby="positive-title">
-        <div className="section-heading positive-heading">
-          <span></span>
-          <h2 id="positive-title">Personal Positive</h2>
+          <h2 id="board-title">Clickable Official Board</h2>
           <span></span>
         </div>
-        <div className="modifier-grid">
-          {positiveModifiers.map((modifier) => renderModifierCard(modifier, "positive"))}
-        </div>
-      </section>
-
-      <section className="modifier-section negative-section" aria-labelledby="negative-title">
-        <div className="section-heading negative-heading">
-          <span></span>
-          <h2 id="negative-title">Personal Negative</h2>
-          <span></span>
-        </div>
-        <div className="modifier-grid">
-          {negativeModifiers.map((modifier) => renderModifierCard(modifier, "negative"))}
+        <div className="board-scroll">
+          <div className="official-board">
+            <Image
+              className="board-image"
+              src="/kord-breach-reference.png"
+              alt="Official Kord Breach modifier board"
+              width={boardSize.width}
+              height={boardSize.height}
+              priority
+            />
+            <div className="board-overlays" aria-label="Clickable modifier regions">
+              {globalModifiers.map((modifier) => renderGlobalHotspot(modifier))}
+              {positiveModifiers.map((modifier) => renderBoardHotspot(modifier, "positive"))}
+              {negativeModifiers.map((modifier) => renderBoardHotspot(modifier, "negative"))}
+            </div>
+          </div>
         </div>
       </section>
 
