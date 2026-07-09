@@ -492,6 +492,26 @@ function loadCanvasImage(src) {
   });
 }
 
+function SelectedModifierList({ emptyText, modifiers }) {
+  if (!modifiers.length) {
+    return <p className="summary-empty">{emptyText}</p>;
+  }
+
+  return (
+    <ul className="summary-list">
+      {modifiers.map((modifier) => (
+        <li key={modifier.id}>
+          <span className="summary-item-title">
+            <strong>{modifier.name}</strong>
+            <span>{formatValue(modifier.value)}</span>
+          </span>
+          <span className="summary-item-effects">{modifier.effects.join(" | ")}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function Home() {
   const [selected, setSelected] = useState(new Set());
   const [status, setStatus] = useState("Global modifiers are always active for every player.");
@@ -722,19 +742,6 @@ export default function Home() {
 
   return (
     <main className="shell">
-      <header className="site-header">
-        <section className="hero-copy" aria-labelledby="page-title">
-          <p className="season-label">Season 1</p>
-          <h1 id="page-title">
-            <span>KORD</span> BREACH
-          </h1>
-          <p className="subtitle">
-            Unofficial Escape from Tarkov modifier build planner. Start with 0 points, earn points
-            from debuffs, then spend them on buffs.
-          </p>
-        </section>
-      </header>
-
       <section className="builder-bar" aria-label="Build status">
         <div className="score-block">
           <span className="score-label">Available points</span>
@@ -801,15 +808,25 @@ export default function Home() {
       </section>
 
       <section className="summary-band" aria-labelledby="summary-title">
-        <div>
+        <div className="summary-header">
           <h2 id="summary-title">Selected Build</h2>
-          <p>
-            {selectedModifiers.length
-              ? selectedModifiers
-                  .map((modifier) => `${modifier.name} ${formatValue(modifier.value)}`)
-                  .join(" | ")
-              : "No personal modifiers selected yet."}
-          </p>
+          <p>{selectedModifiers.length ? `${selectedModifiers.length} personal modifiers selected.` : "No personal modifiers selected yet."}</p>
+        </div>
+        <div className="summary-columns">
+          <section className="summary-column positive-summary" aria-labelledby="positive-summary-title">
+            <h3 id="positive-summary-title">Positive Buffs</h3>
+            <SelectedModifierList
+              emptyText="No buffs selected."
+              modifiers={selectedPositiveModifiers}
+            />
+          </section>
+          <section className="summary-column negative-summary" aria-labelledby="negative-summary-title">
+            <h3 id="negative-summary-title">Negative Debuffs</h3>
+            <SelectedModifierList
+              emptyText="No debuffs selected."
+              modifiers={selectedNegativeModifiers}
+            />
+          </section>
         </div>
       </section>
 
