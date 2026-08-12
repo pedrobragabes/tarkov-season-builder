@@ -31,13 +31,19 @@ The first supported season is **Season 1: Kord Breach**. The app lets players pl
 Install dependencies:
 
 ```bash
-npm install
+npm ci
 ```
 
 Run the development server:
 
 ```bash
 npm run dev
+```
+
+Validate the production bundle before publishing a season:
+
+```bash
+npm run build
 ```
 
 Open the local URL shown in the terminal.
