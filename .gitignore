@@ -30,3 +30,6 @@ Thumbs.db
 *.swo
 .idea/
 .vscode/
+
+/test-results/
+/playwright-report/
