@@ -2,7 +2,7 @@
 
 Unofficial Escape from Tarkov seasonal modifier build planner.
 
-The first supported season is **Season 1: Kord Breach**. The app lets players plan a modifier build before playing by clicking traits directly on the official modifier board image, tracking available points, and blocking incompatible traits.
+The first supported season is **Season 1: Kord Breach**. The app lets players plan a modifier build before playing by clicking traits directly on the supplied modifier board image, tracking available points, and blocking incompatible traits.
 
 ## Features
 
@@ -17,13 +17,13 @@ The first supported season is **Season 1: Kord Breach**. The app lets players pl
 - Share links can be copied directly.
 - Build summaries can be copied as text.
 - Selected builds can be downloaded as a highlighted PNG.
-- Uses the official Kord Breach modifier image as the clickable build board.
+- Uses the Kord Breach reference image supplied with this repository as the clickable build board.
 
 ## Tech Stack
 
 - Next.js
 - React
-- CSS Modules through the App Router global stylesheet
+- Global CSS through the App Router
 - Vercel-ready deployment
 
 ## Getting Started
@@ -31,7 +31,7 @@ The first supported season is **Season 1: Kord Breach**. The app lets players pl
 Install dependencies:
 
 ```bash
-npm install
+npm ci
 ```
 
 Run the development server:
@@ -59,17 +59,24 @@ public/
   kord-breach-reference.png
 ```
 
-## Future Seasons
+## Data snapshot and future seasons
 
-This repository is intended to support future Escape from Tarkov seasons in the same app instead of creating a separate repository for each season. A later update can move season data into separate files, for example:
+`lib/kord-breach.mjs` holds the existing Season 1 dataset, board geometry and pure planning rules. Modifier values, effects, conflicts and the two original image files were preserved. This is a supplied snapshot, not a live feed or confirmation of current in-game balance. Verify values in-game before relying on a build. A search restricted to official Tarkov/BSG domains did not return a current modifier table on 2026-10-05; no later season, schedule or balance values were invented.
 
-```txt
-seasons/
-  kord-breach.js
-  season-two.js
+Additional seasons need a provided or authoritative dataset and a matching board before a selector can be implemented. Existing comma-separated share hashes remain compatible. Hash changes and reloads normalize unknown, duplicate, conflicting and unfunded selections; hashes longer than 4096 characters are ignored.
+
+## Validation and maintenance
+
+Requires Node.js 24.13 or later. Dependencies are pinned to Next.js 16.3.8 and React/React DOM 19.2.8. The full npm audit changed from five findings (including one critical) to zero. Eight Node tests cover points, compatibility, board contracts and 1000 deterministic input combinations. Six browser scenarios verify hash updates, clipboard success/failure, funding removal, reload/reset, responsive accessibility and a real 2397×2149 PNG. These scenarios passed both development and local production; six Axe checks cover empty/selected states at 1440, 390 and 320 pixels. Axe does not certify complete accessibility or embedded image text.
+
+```bash
+npm test
+npm run build
+npx playwright install chromium
+npm run test:e2e
 ```
 
-Then the UI can expose a season selector while keeping one domain, one Vercel project, and one codebase.
+CI runs tests and browser scenarios against the production build on Linux, audits dependencies and scans secrets. Playwright/Axe are test-only dependencies that verify actual browser clipboard, hash navigation, layout and downloads without a custom fake browser. Windows/Chromium was used locally; hosted deployment and other browsers require separate verification. Native clipboard denial reports an error; the legacy copy fallback also checks the browser result and restores focus.
 
 ## Disclaimer
 
